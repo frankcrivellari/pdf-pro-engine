@@ -95,7 +95,7 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen bg-slate-50 text-slate-900 overflow-hidden">
       {/* Toolbar */}
-      <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-slate-200 h-16 shrink-0 z-50 shadow-sm relative">
+      <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-slate-200 h-16 shrink-0 z-[9999] shadow-sm relative pointer-events-auto">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">
             PS
@@ -105,9 +105,12 @@ export default function Home() {
         
         <div className="flex items-center gap-4">
           <button 
-            onClick={handleExportPdf}
+            onClick={() => {
+              console.log("BUTTON DIREKT GEKLICKT");
+              handleExportPdf();
+            }}
             disabled={isGenerating}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-md text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-md text-sm font-medium transition-colors shadow-sm cursor-pointer pointer-events-auto"
           >
             {isGenerating ? (
               <>
