@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
-import { FileDown, Eye, Code2 } from "lucide-react";
+import { FileDown, Eye, Code2, Loader2 } from "lucide-react";
 
 export default function Home() {
+  const [isGenerating, setIsGenerating] = useState(false);
   const [htmlContent, setHtmlContent] = useState(`
 <div style="font-family: sans-serif; padding: 40px; color: #333;">
   <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 20px;">Rechnung #2024-001</h1>
@@ -51,6 +52,38 @@ export default function Home() {
     setHtmlContent(value || "");
   };
 
+  const handleExportPdf = async () => {
+    setIsGenerating(true);
+    try {
+      const response = await fetch("/api/generate-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ html: htmlContent }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "document.pdf";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-slate-50 text-slate-900 overflow-hidden">
       {/* Toolbar */}
@@ -63,9 +96,22 @@ export default function Home() {
         </div>
         
         <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-sm font-medium transition-colors shadow-sm">
-            <FileDown size={18} />
-            Export PDF
+          <button 
+            onClick={handleExportPdf}
+            disabled={isGenerating}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-md text-sm font-medium transition-colors shadow-sm"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <FileDown size={18} />
+                Export PDF
+              </>
+            )}
           </button>
         </div>
       </header>
