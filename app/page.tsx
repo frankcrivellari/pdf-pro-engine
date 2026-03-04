@@ -53,8 +53,10 @@ export default function Home() {
   };
 
   const handleExportPdf = async () => {
+    console.log("Export PDF button clicked");
     setIsGenerating(true);
     try {
+      console.log("Sending request to /api/generate-pdf...");
       const response = await fetch("/api/generate-pdf", {
         method: "POST",
         headers: {
@@ -63,10 +65,15 @@ export default function Home() {
         body: JSON.stringify({ html: htmlContent }),
       });
 
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error("Failed to generate PDF");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("API Error:", errorData);
+        throw new Error(errorData.details || errorData.error || "Failed to generate PDF");
       }
 
+      console.log("PDF generated successfully, downloading...");
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -76,9 +83,10 @@ export default function Home() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-    } catch (error) {
+      console.log("Download initiated");
+    } catch (error: any) {
       console.error("Error generating PDF:", error);
-      alert("Failed to generate PDF. Please try again.");
+      alert(`Failed to generate PDF: ${error.message || "Unknown error"}`);
     } finally {
       setIsGenerating(false);
     }
@@ -87,7 +95,7 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen bg-slate-50 text-slate-900 overflow-hidden">
       {/* Toolbar */}
-      <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-slate-200 h-16 shrink-0 z-10 shadow-sm">
+      <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-slate-200 h-16 shrink-0 z-50 shadow-sm relative">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">
             PS
