@@ -93,7 +93,14 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 text-slate-900 overflow-hidden">
+    <div className="flex flex-col h-screen bg-slate-50 text-slate-900 overflow-hidden pointer-events-none">
+      <button 
+        onClick={() => alert('HTML KLICK GEHT')}
+        className="fixed top-0 left-1/2 -translate-x-1/2 z-[10000] bg-red-500 text-white p-4 font-bold pointer-events-auto"
+      >
+        TEST NOTFALL BUTTON
+      </button>
+
       {/* Toolbar */}
       <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-slate-200 h-16 shrink-0 z-[9999] shadow-sm relative pointer-events-auto">
         <div className="flex items-center gap-3">
@@ -110,7 +117,7 @@ export default function Home() {
               handleExportPdf();
             }}
             disabled={isGenerating}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-md text-sm font-medium transition-colors shadow-sm cursor-pointer pointer-events-auto"
+            className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 disabled:bg-slate-400 text-white rounded-md text-sm font-medium transition-colors shadow-sm cursor-pointer pointer-events-auto border-2 border-yellow-400"
           >
             {isGenerating ? (
               <>
@@ -128,7 +135,7 @@ export default function Home() {
       </header>
 
       {/* Main Content Split Screen */}
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 flex overflow-hidden pointer-events-none opacity-50">
         {/* Left Pane: Editor */}
         <div className="w-1/2 flex flex-col border-r border-slate-200 bg-[#1e1e1e]">
           <div className="flex items-center justify-between px-4 py-2 bg-[#1e1e1e] border-b border-[#333] text-gray-400 text-xs font-medium uppercase tracking-wider">
@@ -138,7 +145,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex-1 relative">
-            <Editor
+            {/* <Editor
               height="100%"
               defaultLanguage="html"
               theme="vs-dark"
@@ -154,7 +161,8 @@ export default function Home() {
                 padding: { top: 16, bottom: 16 },
                 fontFamily: "'Fira Code', 'Menlo', 'Monaco', 'Courier New', monospace",
               }}
-            />
+            /> */}
+            <div className="p-8 text-white">Editor disabled for debugging</div>
           </div>
         </div>
 
@@ -179,12 +187,13 @@ export default function Home() {
                 maxWidth: '100%',
               }}
             >
-              <iframe
+              {/* <iframe
                 title="PDF Preview"
                 srcDoc={htmlContent}
                 className="w-full h-full border-none"
                 sandbox="allow-scripts" 
-              />
+              /> */}
+              <div className="p-8 text-black">Preview disabled for debugging</div>
             </div>
           </div>
         </div>
